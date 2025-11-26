@@ -18,16 +18,14 @@ while run:
 
     for event in py.event.get():
 
-        next_screen = current_screen.handle_screen()
+        next_screen = current_screen.handle_screen(event)
         if next_screen:
             current_screen = next_screen
-
-        current_screen.draw(window)
 
         if event.type == py.QUIT:
             run = False
 
-
+    current_screen.draw(window)
     clock.tick(30)
     py.display.update()
 
