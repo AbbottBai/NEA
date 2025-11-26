@@ -2,6 +2,7 @@ import pygame as py
 from animated_text import animated_text
 from auth_ui import button
 from login_screen import login_screen
+from signup_screen import signup_screen
 
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -31,8 +32,7 @@ class first_screen:
         if self.login_button.is_clicked(event):
             return login_screen(self.width, self.height)
         elif self.signup_button.is_clicked(event):
-            pass
-            #return signup_screen(self.width, self.height)
+            return signup_screen(self.width, self.height)
 
     def draw(self, window):
         window.blit(self.lb_background, (0, 0))
