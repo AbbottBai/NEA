@@ -1,5 +1,6 @@
 import pygame as py
 from auth_ui import input_box, button
+from authentication import authentication
 
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -30,12 +31,23 @@ class signup_screen:
         self.submit_button = button("Sign up", width // 2 - self.button_width // 2, height // 2 + 100, self.button_width,
                                self.button_height, red, 0.5)
 
+        self.error = False
+        self.error_message = ""
+        font = py.font.SysFont("Arial", 30)
+        self.error_surface = font.render(self.error_message, True, red)
+
     def handle_screen(self, event):
         self.email_box.handle_event(event)
         self.password_box.handle_event(event)
         self.password_box2.handle_event(event)
         if self.submit_button.is_clicked(event):
-            pass
+            auth = authentication(self.email_box.text, self.password_box.text, self.password_box2.text)
+            self.error, self.error_message = auth.password_check()
+            if self.error == False:
+                auth.sign_up()
+            else:
+                font = py.font.SysFont("Arial", 30)
+                self.error_surface = font.render(self.error_message, True, red)
 
     def draw(self, window):
         window.blit(self.lb_background, (0, 0))
@@ -43,3 +55,4 @@ class signup_screen:
         self.password_box.draw(window)
         self.password_box2.draw(window)
         self.submit_button.draw(window)
+        window.blit(self.error_surface, (100, 400))

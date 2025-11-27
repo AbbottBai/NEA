@@ -7,9 +7,7 @@ c = conn.cursor()
 # Create the user table
 c.execute('''CREATE TABLE IF NOT EXISTS User
             (UserEmail TEXT NOT NULL PRIMARY KEY,
-            UserPassword TEXT NOT NULL,
-            FirstName TEXT NOT NULL,
-            LastName TEXT NOT NULL)''')
+            UserPassword TEXT NOT NULL)''')
 conn.commit()
 
 # Create the setting table
