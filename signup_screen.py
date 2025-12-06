@@ -41,8 +41,8 @@ class signup_screen:
         self.password_box.handle_event(event)
         self.password_box2.handle_event(event)
         if self.submit_button.is_clicked(event):
-            auth = authentication(self.email_box.text, self.password_box.text, self.password_box2.text)
-            self.error, self.error_message = auth.password_check()
+            auth = authentication(self.email_box.text, self.password_box.text)
+            self.error, self.error_message = auth.password_check(self.password_box2.text)
             if self.error == False:
                 auth.sign_up()
             else:
@@ -55,4 +55,4 @@ class signup_screen:
         self.password_box.draw(window)
         self.password_box2.draw(window)
         self.submit_button.draw(window)
-        window.blit(self.error_surface, (100, 400))
+        window.blit(self.error_surface, (300, 400))

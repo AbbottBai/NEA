@@ -1,21 +1,21 @@
 import hashlib
+import os
 import re
 import sqlite3
 
 
 class authentication():
-    def __init__(self, email, password, re_password):
+    def __init__(self, email, password):
         self.email = email
         self.password = password
-        self.re_password = re_password
         self.hashed_password = hashlib.sha256(self.password.encode()).hexdigest()
 
     def login_func(self):
         pass
 
-    def password_check(self):
+    def password_check(self, re_password):
 
-        if self.password != self.re_password:
+        if self.password != re_password:
             error_message = "Passwords do not match"
             return True, error_message
 
@@ -42,7 +42,8 @@ class authentication():
         return False, ""
 
     def sign_up(self):
-        conn = sqlite3.connect('users.db')
+        print("DB PATH:", os.path.abspath("database.db"))
+        conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         try:
             cursor.execute("INSERT INTO User (UserEmail, UserPassword) VALUES (?, ?)",

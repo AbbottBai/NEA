@@ -1,4 +1,3 @@
-from animated_text import animated_text
 import pygame as py
 
 white = (255, 255, 255)
