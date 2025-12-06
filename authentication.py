@@ -11,7 +11,31 @@ class authentication():
         self.hashed_password = hashlib.sha256(self.password.encode()).hexdigest()
 
     def login_func(self):
-        pass
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+        try:
+            # Check if email exists
+            cursor.execute("SELECT UserPassword FROM User WHERE UserEmail = ?", (self.email,))
+            result = cursor.fetchone()
+
+            if not result:
+                conn.close()
+                return False, "Account does not exist"
+
+            stored_hash = result[0]
+
+            # Compare hashed passwords
+            if stored_hash == self.hashed_password:
+                conn.close()
+                return True, "Login successful"
+            else:
+                conn.close()
+                return False, "Incorrect password"
+
+        except Exception as e:
+            conn.close()
+            return False, f"Database error: {e}"
 
     def password_check(self, re_password):
 

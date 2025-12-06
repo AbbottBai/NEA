@@ -1,5 +1,6 @@
 import pygame as py
 from auth_ui import input_box, button
+from authentication import authentication
 
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -29,7 +30,9 @@ class login_screen:
         self.email_box.handle_event(event)
         self.password_box.handle_event(event)
         if self.submit_button.is_clicked(event):
-            pass
+            auth = authentication(self.email_box.text, self.password_box.text)
+            success, message = auth.login_func()
+            print(message)
 
     def draw(self, window):
         window.blit(self.lb_background, (0, 0))
