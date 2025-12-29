@@ -33,6 +33,8 @@ class screen_controller:
             return login_screen(self.width, self.height)
         elif self.signup_button.is_clicked(event):
             return signup_screen(self.width, self.height)
+        elif self.login_screen.login_state == True or self.self.signup_screen.signup_state == True:
+            pass # Placeholder for main lobby screen
 
     def draw(self, window):
         window.blit(self.lb_background, (0, 0))

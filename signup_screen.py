@@ -35,6 +35,7 @@ class signup_screen:
         self.error_message = ""
         font = py.font.SysFont("Arial", 30)
         self.error_surface = font.render(self.error_message, True, red)
+        self.signup_status = False
 
     def handle_screen(self, event):
         self.email_box.handle_event(event)
@@ -45,6 +46,7 @@ class signup_screen:
             self.error, self.error_message = auth.password_check(self.password_box2.text)
             if self.error == False:
                 auth.sign_up()
+                self.signup_status = True
             else:
                 font = py.font.SysFont("Arial", 30)
                 self.error_surface = font.render(self.error_message, True, red)

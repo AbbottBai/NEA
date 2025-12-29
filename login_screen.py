@@ -30,14 +30,14 @@ class login_screen:
 
         self.font = py.font.SysFont("arial", 36)
         self.message = ""
-        self.message = ""
+        self.login_state = False
 
     def handle_screen(self, event):
         self.email_box.handle_event(event)
         self.password_box.handle_event(event)
         if self.submit_button.is_clicked(event):
             auth = authentication(self.email_box.text, self.password_box.text)
-            success, self.message = auth.login_func()
+            self.login_state, self.message = auth.login_func()
             print(self.message)
 
     def draw(self, window):
