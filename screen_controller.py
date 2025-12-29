@@ -14,7 +14,7 @@ blue = (0, 0, 255)
 light_blue = (0, 150, 255)
 
 
-class first_screen:
+class screen_controller:
     def __init__(self, width, height):
         self.width = width
         self.height = height
