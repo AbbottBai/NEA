@@ -1,6 +1,7 @@
 import pygame as py
 from auth_ui import input_box, button
 from authentication import authentication
+from info_screen import info_screen
 
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -35,9 +36,18 @@ class login_screen:
     def handle_screen(self, event):
         self.email_box.handle_event(event)
         self.password_box.handle_event(event)
+
         if self.submit_button.is_clicked(event):
             auth = authentication(self.email_box.text, self.password_box.text)
             self.login_state, self.message = auth.login_func()
+
+            if self.login_state:
+                return info_screen( #continue to info screen
+                    self.width,
+                    self.height,
+                    on_confirm=lambda: None,
+                    on_cancel=lambda: self
+                )
             print(self.message)
 
     def draw(self, window):
