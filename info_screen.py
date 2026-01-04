@@ -7,29 +7,57 @@ class info_screen:
         self.on_confirm = on_confirm
         self.on_cancel = on_cancel
 
+        self.lb_background = py.image.load("lb_background.jpg")
+        self.lb_background = py.transform.scale(self.lb_background, (width, height))
         self.font = py.font.SysFont(None, 36)
+        self.button_font = py.font.SysFont(None, 32)
 
-        self.yes_btn = py.Rect(width//2 - 120, height//2 + 40, 100, 40)
-        self.no_btn  = py.Rect(width//2 + 20,  height//2 + 40, 100, 40)
+        # Continue button (bottom-right)
+        self.continue_btn = py.Rect(width - 180, height - 80, 140, 45)
 
-    def draw_button(self, window, rect, text):
-        py.draw.rect(window, (220, 220, 220), rect)
-        py.draw.rect(window, (0, 0, 0), rect, 2)
-        txt = self.font.render(text, True, (0, 0, 0))
-        window.blit(txt, txt.get_rect(center=rect.center))
+        # Multiline text
+        self.text = (
+            "Welcome to GCSE computer science laser tag.\n"
+            "This is a next generation revision tool which will\n"
+            "help you consolidate existing knowledge and\n"
+            "learn new materials.\n\n"
+            "This game aims to provide a fun and intuitive\n"
+            "learning experience.\n"
+            "I hope you enjoy!"
+        )
+
+    def draw_button(self, window):
+        red = (180, 0, 0)
+        dark_red = (120, 0, 0)
+
+        # This creates a boarder for the continue button
+        py.draw.rect(window, red, self.continue_btn, border_radius=6)
+        py.draw.rect(window, dark_red, self.continue_btn, 2, border_radius=6)
+
+        txt = self.button_font.render("Continue", True, (255, 255, 255))
+        window.blit(txt, txt.get_rect(center=self.continue_btn.center))
+
 
     def handle_screen(self, event):
+        # Detect when the continue button is clicked.
         if event.type == py.MOUSEBUTTONDOWN:
-            if self.yes_btn.collidepoint(event.pos):
-                return self.on_confirm()
-            if self.no_btn.collidepoint(event.pos):
-                return self.on_cancel()
+            if self.continue_btn.collidepoint(event.pos):
+                return self.on_continue()
 
     def draw(self, window):
-        window.fill((240, 240, 240))
+        # Draw background instead of just filling screen with white
+        window.blit(self.lb_background, (0, 0))
 
-        msg = self.font.render("Are you sure?", True, (0, 0, 0))
-        window.blit(msg, msg.get_rect(center=(self.width//2, self.height//2 - 40)))
+        # Draw multiline text
+        lines = self.text.split("\n")
+        y = self.height // 2 - 120
 
-        self.draw_button(window, self.yes_btn, "Yes")
-        self.draw_button(window, self.no_btn, "No")
+        # Renders multiline text
+        for line in lines:
+            rendered = self.font.render(line, True, (0,0,0))
+            rect = rendered.get_rect(center=(self.width // 2, y))
+            window.blit(rendered, rect)
+            y += 36
+
+        # Draw button
+        self.draw_button(window)
