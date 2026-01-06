@@ -1,5 +1,5 @@
 import pygame as py
-from init_screen_controller import init_screen_controller
+from screen_controller import screen_controller
 
 py.init()
 clock = py.time.Clock()
@@ -12,7 +12,7 @@ py.display.set_caption("Computer Science Revision Game")
 
 run = True
 
-screen_controller = init_screen_controller(width, height)
+screen_controller = screen_controller(width, height)
 
 while run:
 

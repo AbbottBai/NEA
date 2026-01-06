@@ -112,7 +112,7 @@ class lobby_screen:
         if self.play_button.clicked(event):
             return "play"
         if self.signout_button.clicked(event):
-            return "sign_out"
+            return login_screen(self.width, self.height)
         return None
 
     def draw(self, window):
