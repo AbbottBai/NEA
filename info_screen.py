@@ -1,4 +1,5 @@
 import pygame as py
+from lobby_screen import lobby_screen
 
 class info_screen:
     def __init__(self, width, height, on_confirm, on_cancel):
@@ -42,7 +43,7 @@ class info_screen:
         # Detect when the continue button is clicked.
         if event.type == py.MOUSEBUTTONDOWN:
             if self.continue_btn.collidepoint(event.pos):
-                return self.on_continue()
+                return lobby_screen(self.width, self.height)
 
     def draw(self, window):
         # Draw background instead of just filling screen with white
