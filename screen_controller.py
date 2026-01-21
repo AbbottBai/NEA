@@ -1,8 +1,6 @@
 import pygame as py
 from animated_text import animated_text
 from auth_ui import button
-from login_screen import login_screen
-from signup_screen import signup_screen
 
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -30,9 +28,9 @@ class screen_controller:
 
     def handle_screen(self, event):
         if self.login_button.is_clicked(event):
-            return login_screen(self.width, self.height)
+            return "login_screen"
         elif self.signup_button.is_clicked(event):
-            return signup_screen(self.width, self.height)
+            return "signup_screen"
         # Deleted info screen handling from screen controller and moved it to login and signup screen handlers
 
     def draw(self, window):

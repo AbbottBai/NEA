@@ -1,7 +1,6 @@
 import pygame as py
 from auth_ui import input_box, button
 from authentication import authentication
-from info_screen import info_screen
 
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -48,12 +47,7 @@ class signup_screen:
             if self.error == False:
                 auth.sign_up()
                 self.signup_status = True
-                return info_screen( #continue to info screen
-                    self.width,
-                    self.height,
-                    on_confirm=lambda: None,
-                    on_cancel=lambda: self
-                )
+                return "info_screen"
 
             else:
                 font = py.font.SysFont("Arial", 30)

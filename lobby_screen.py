@@ -110,9 +110,9 @@ class lobby_screen:
 
     def handle_screen(self, event):
         if self.play_button.clicked(event):
-            return "play"
+            return "play" #not working, just a placeholder for now.
         if self.signout_button.clicked(event):
-            return login_screen(self.width, self.height)
+            return "login_screen" # This switches screen back to login screen.
         return None
 
     def draw(self, window):
