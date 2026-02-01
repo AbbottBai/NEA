@@ -41,17 +41,41 @@ class signup_screen:
         self.email_box.handle_event(event)
         self.password_box.handle_event(event)
         self.password_box2.handle_event(event)
+
         if self.submit_button.is_clicked(event):
             auth = authentication(self.email_box.text, self.password_box.text)
-            self.error, self.error_message = auth.password_check(self.password_box2.text)
-            if self.error == False:
-                auth.sign_up()
-                self.signup_status = True
-                return "info_screen"
 
-            else:
+            # 1) Email format check
+            self.error, self.error_message = auth.email_check()
+            if self.error:
                 font = py.font.SysFont("Arial", 30)
                 self.error_surface = font.render(self.error_message, True, red)
+                return
+
+            # 2) Email duplicate check
+            if auth.email_exists():
+                self.error = True
+                self.error_message = "Email already exists"
+                font = py.font.SysFont("Arial", 30)
+                self.error_surface = font.render(self.error_message, True, red)
+                return
+
+            # 3) Password checks
+            self.error, self.error_message = auth.password_check(self.password_box2.text)
+            if self.error:
+                font = py.font.SysFont("Arial", 30)
+                self.error_surface = font.render(self.error_message, True, red)
+                return
+
+            # 4) Create account
+            self.error, self.error_message = auth.sign_up()
+            if self.error:
+                font = py.font.SysFont("Arial", 30)
+                self.error_surface = font.render(self.error_message, True, red)
+                return
+
+            self.signup_status = True
+            return "info_screen"
 
     def draw(self, window):
         window.blit(self.lb_background, (0, 0))

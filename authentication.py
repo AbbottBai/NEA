@@ -6,9 +6,37 @@ import sqlite3
 
 class authentication():
     def __init__(self, email, password):
-        self.email = email
+        self.email = (email or "").strip()
         self.password = password
         self.hashed_password = hashlib.sha256(self.password.encode()).hexdigest()
+
+    def email_check(self):
+        # Simple, practical email pattern
+        pattern = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+
+        # Rejects blank email inputs
+        if self.email == "":
+            return True, "Please enter an email"
+
+        # Rejects email which is not in the correct format
+        if not re.match(pattern, self.email):
+            return True, "Invalid email format"
+
+        # enforce max length
+        if len(self.email) > 254:
+            return True, "Email is too long"
+
+        return False, ""
+
+    # Checks if email already exists
+    def email_exists(self):
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT 1 FROM User WHERE UserEmail = ? LIMIT 1", (self.email,))
+            return cursor.fetchone() is not None
+        finally:
+            conn.close()
 
     def login_func(self):
         conn = sqlite3.connect('database.db')
@@ -66,16 +94,17 @@ class authentication():
         return False, ""
 
     def sign_up(self):
-        print("DB PATH:", os.path.abspath("database.db"))
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
         try:
-            cursor.execute("INSERT INTO User (UserEmail, UserPassword) VALUES (?, ?)",
-                           (self.email, self.hashed_password))
+            cursor.execute(
+                "INSERT INTO User (UserEmail, UserPassword) VALUES (?, ?)",
+                (self.email, self.hashed_password)
+            )
             conn.commit()
-            print("User registered successfully")
+            return False, "User registered successfully"
 
         except sqlite3.IntegrityError:
-            print("Email already exists")
-
-        conn.close()
+            return True, "Email already exists"
+        finally:
+            conn.close()
