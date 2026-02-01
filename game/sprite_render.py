@@ -27,3 +27,5 @@ def sprites():
     for i in range(len(r_idle)):
         idle = py.transform.flip(r_idle[i], True, False)
         l_idle.append(idle)
+
+    return r_run, r_idle, l_run, l_idle
