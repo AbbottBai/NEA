@@ -32,18 +32,18 @@ class player:
 
     def move_player(self):
         key = py.key.get_pressed()
+        self.left_background_shift = False
+        self.right_background_shift = False
         if key[py.K_a]:
             self.left_background_shift = False
             self.left = True
             self.right = False
             self.moving = True
             self.h_movement_counter -= self.h_velocity
-            if self.x >= self.l_boundary:
+            if self.x > self.l_boundary:
                 self.x -= self.h_velocity
             else:
                 self.right_background_shift = True
-        else:
-            self.left_background_shift = False
 
         if key[py.K_d]:
             self.right_background_shift = False
@@ -55,8 +55,6 @@ class player:
                 self.x += self.h_velocity
             else:
                 self.left_background_shift = True
-        else:
-            self.right_background_shift = False
 
         if key[py.K_w]:
             self.bg_downshift = False
@@ -113,5 +111,8 @@ class player:
                 window.blit(l_run[self.run_count // 3], (self.x, self.y))
                 self.run_count += 1
             elif self.right:
+                window.blit(r_run[self.run_count // 3], (self.x, self.y))
+                self.run_count += 1
+            else:
                 window.blit(r_run[self.run_count // 3], (self.x, self.y))
                 self.run_count += 1
