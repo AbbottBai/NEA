@@ -54,11 +54,7 @@ class player:
             else:
                 self.left_background_shift = True
 
-        else:
-            self.left_background_shift = False
-            self.right_background_shift = False
-
-        if key[py.K_w]:
+        elif key[py.K_w]:
             self.bg_downshift = False
             self.down = False
             self.up = True
@@ -69,7 +65,7 @@ class player:
             else:
                 self.bg_upshift = True
 
-        if key[py.K_s]:
+        elif key[py.K_s]:
             self.bg_upshift = False
             self.up = False
             self.down = True
@@ -79,6 +75,13 @@ class player:
                 self.y += self.v_velocity
             else:
                 self.bg_downshift = True
+
+        else:
+            self.moving = False
+            self.left_background_shift = False
+            self.right_background_shift = False
+            self.bg_upshift = False
+            self.bg_downshift = False
 
     def draw_player(self, window):
         self.move_player()
