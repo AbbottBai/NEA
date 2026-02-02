@@ -3,7 +3,7 @@ import os
 
 def load_sprite(sprite_width, sprite_height, sheet_name, sprite_amount):
     right_sprites = []
-    image_path = os.path.join("sprites", sheet_name)
+    image_path = os.path.join("", "sprite", sheet_name)
     sprite_sheet = py.image.load(image_path).convert_alpha()
     # For functions are required because there are multiple sprites per image
     # This is because of animations

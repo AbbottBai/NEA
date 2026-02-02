@@ -2,14 +2,13 @@ import pygame as py
 import os
 
 class bg_render:
-    def __init__(self, width, height, colour_name, floor_name):
+    def __init__(self, width, height, colour_name):
         self.width = width
         self.height = height
         self.colour_name = colour_name
-        self.floor_name = floor_name
 
     def create_background(self):
-        image_path = os.path.join("background", self.colour_name)
+        image_path = os.path.join("..", "background", self.colour_name)
         tile = py.image.load(image_path)
         _, _, tile_width, tile_height = tile.get_rect()
         tile_coords = []
