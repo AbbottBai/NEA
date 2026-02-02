@@ -1,4 +1,5 @@
-from sprite_render import *
+from game.sprite_render import sprites
+import pygame as py
 
 r_run, r_idle, l_run, l_idle = sprites()
 

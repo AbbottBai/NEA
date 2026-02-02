@@ -4,7 +4,9 @@ import os
 def load_sprite(sprite_width, sprite_height, sheet_name, sprite_amount):
     right_sprites = []
     image_path = os.path.join("", "sprite", sheet_name)
-    sprite_sheet = py.image.load(image_path).convert_alpha()
+    sprite_sheet = py.image.load(image_path)
+    if py.display.get_surface():  # only convert if a window exists
+        sprite_sheet = sprite_sheet.convert_alpha()
     # For functions are required because there are multiple sprites per image
     # This is because of animations
     for i in range(sprite_amount):
