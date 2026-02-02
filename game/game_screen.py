@@ -39,9 +39,9 @@ class game_screen:
         if self.p.right_background_shift:
             dx -= self.bg_speed
         if self.p.bg_upshift:
-            dy += self.bg_speed
-        if self.p.bg_downshift:
             dy -= self.bg_speed
+        if self.p.bg_downshift:
+            dy += self.bg_speed
 
         if dx or dy:
             self.bg.shift(dx, dy)
