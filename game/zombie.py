@@ -49,27 +49,30 @@ class zombie:
         # set velocity sign for animation direction
         self.velocity = speed if nx >= 0 else -speed
 
-    def draw(self, window):
-        if self.visible:
-            self.chase()
-            if self.walk_count >= 33:
-                self.walk_count = 0
+    def draw(self, window, cam_x, cam_y):
+        if not self.visible:
+            return
 
-            if self.velocity > 0:
-                window.blit(self.right_images[self.walk_count //3], (self.x, self.y))
-                self.walk_count += 1
-            else:
-                window.blit(self.left_images[self.walk_count //3], (self.x, self.y))
-                self.walk_count += 1
+        self.chase()
 
-            py.draw.rect(window, (255, 0, 0), (self.hitbox[0], self.hitbox[1] - 20, 50, 10))
-            py.draw.rect(window, (0, 128, 0), (self.hitbox[0], self.hitbox[1] - 20, 50 - (5 * (10 - self.health)), 10))
-            self.hitbox = (self.x + 20, self.y, 28, 60)
-            #pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
+        if self.walk_count >= 33:
+            self.walk_count = 0
 
+        sx = self.x + cam_x
+        sy = self.y + cam_y
+
+        if self.velocity > 0:
+            window.blit(self.right_images[self.walk_count // 3], (sx, sy))
         else:
-            pass
+            window.blit(self.left_images[self.walk_count // 3], (sx, sy))
+        self.walk_count += 1
 
+        # Hitbox should be in screen coords for drawing
+        self.hitbox = (sx + 20, sy, 28, 60)
+
+        py.draw.rect(window, (255, 0, 0), (self.hitbox[0], self.hitbox[1] - 20, 50, 10))
+        py.draw.rect(window, (0, 128, 0),
+                     (self.hitbox[0], self.hitbox[1] - 20, 50 - (5 * (10 - self.health)), 10))
 
     def hit(self):
         if self.health > 0:

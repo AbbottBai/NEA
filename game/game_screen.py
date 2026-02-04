@@ -10,6 +10,8 @@ class game_screen:
         self.width = width
         self.height = height
         self.bg = bg_render(width, height, "Blue.png")
+        self.cam_x = 0 #Added in camera view variables
+        self.cam_y = 0
 
         # Zombie spawning variables
         self.start_time_ms = py.time.get_ticks()
@@ -58,60 +60,58 @@ class game_screen:
 
         if dx or dy:
             self.bg.shift(dx, dy)
-            # Shift zombies same as background
-            """
-            for z in self.zombie_list:
-                z.x += dx
-                z.y += dy"""
+
+            # Shifts camera with background
+            self.cam_x -= dx
+            self.cam_y -= dy
 
     def spawn_zombie(self):
         side = random.choice(["left", "right", "top", "bottom"])
         pad = 60  # How far off-screen they start
 
         if side == "left":
-            x = -pad
-            y = random.randint(0, self.height)
+            sx, sy = -pad, random.randint(0, self.height)
         elif side == "right":
-            x = self.width + pad
-            y = random.randint(0, self.height)
+            sx, sy = self.width + pad, random.randint(0, self.height)
         elif side == "top":
-            x = random.randint(0, self.width)
-            y = -pad
-        else:  # bottom
-            x = random.randint(0, self.width)
-            y = self.height + pad
+            sx, sy = random.randint(0, self.width), -pad
+        else:
+            sx, sy = random.randint(0, self.width), self.height + pad
 
-        z = zombie(x, y, width=64, end=0, player_x=self.p.x, player_y=self.p.y)
+        # Convert screen spawn position into world position
+        wx = sx - self.cam_x
+        wy = sy - self.cam_y
+
+        z = zombie(wx, wy, width=64, end=0, player_x=0, player_y=0)
         self.zombie_list.append(z)
 
     def handle_zombie(self):
         now = py.time.get_ticks()
 
-        # Ramp difficulty up over time by reducing interval
         elapsed = now - self.start_time_ms
         ramps = elapsed // self.ramp_every_ms
-        target_interval = max(self.min_interval_ms,
-                              800 - ramps * self.ramp_step_ms)  # starts at 800ms
-        self.spawn_interval_ms = target_interval
+        self.spawn_interval_ms = max(self.min_interval_ms, 800 - ramps * self.ramp_step_ms)
 
-        # Spawn zombies when timer says so
         if now - self.last_spawn_ms >= self.spawn_interval_ms:
             self.last_spawn_ms = now
             self.spawn_zombie()
 
-        # Update each zombie's target (player position)
-        for z in self.zombie_list:
-            z.set_target(self.p.x, self.p.y)
+        # Player world coords
+        player_wx = self.p.x - self.cam_x
+        player_wy = self.p.y - self.cam_y
 
-        # Remove dead/invisible zombies
+        # Zombies chase the world position
+        for z in self.zombie_list:
+            z.set_target(player_wx, player_wy)
+
         self.zombie_list = [z for z in self.zombie_list if z.visible]
 
 
 
     def draw(self, window):
         self.bg.draw(window)
-        self.handle_zombie()
         self.p.draw_player(window)
         self.shift_background_from_player_flags()
+        self.handle_zombie()
         for z in self.zombie_list:
-            z.draw(window)
+            z.draw(window, self.cam_x, self.cam_y)
