@@ -2,6 +2,7 @@ import pygame as py
 from game.player import player
 from game.bg_render import bg_render
 from game.zombie import zombie
+from game.projectile import projectile
 import random
 
 
@@ -20,6 +21,10 @@ class game_screen:
         self.min_interval_ms = 250      # cap at 4 zombies/sec
         self.ramp_every_ms = 4000       # every 4s, speed up spawns
         self.ramp_step_ms = 60          # subtract 60ms each ramp
+        self.bullets = []
+        self.cooldown_counter = 0
+        self.cooldown_frames = 6
+        self.max_bullets = 5
 
         # Player setup
         p_w, p_h = 64, 64
@@ -41,8 +46,11 @@ class game_screen:
         self.bg_speed = 6
 
     def handle_screen(self, event):
-        if event.type == py.KEYDOWN and event.key == py.K_ESCAPE:
-            return "lobby_screen"
+        if event.type == py.KEYDOWN:
+            if event.key == py.K_ESCAPE:
+                return "lobby_screen"
+            if event.key == py.K_SPACE:
+                self.try_shoot()
         return None
 
     def shift_background_from_player_flags(self):
@@ -106,12 +114,71 @@ class game_screen:
 
         self.zombie_list = [z for z in self.zombie_list if z.visible]
 
+    def try_shoot(self):
+        if self.cooldown_counter != 0:
+            return
+        if len(self.bullets) >= self.max_bullets:
+            return
 
+        self.cooldown_counter = self.cooldown_frames
+
+        speed = 15
+        keys = py.key.get_pressed()
+
+        # Aim: if holding W/S, shoot vertical. Otherwise shoot left/right based on facing.
+        if keys[py.K_w]:
+            vx, vy = 0, -speed
+        elif keys[py.K_s]:
+            vx, vy = 0, speed
+        else:
+            vx = -speed if self.p.left else speed
+            vy = 0
+
+        # player center in WORLD coords
+        pwx = (self.p.x - self.cam_x) + self.p.width / 2
+        pwy = (self.p.y - self.cam_y) + self.p.height / 2
+
+        b = projectile(pwx, pwy, 5, (0, 0, 0), vx, vy)
+        self.bullets.append(b)
+
+    def tick_cooldown(self): # For projectile
+        if self.cooldown_counter > 0:
+            self.cooldown_counter -= 1
+
+    def update_bullets(self):
+        # iterate backwards so popping is safe
+        for i in range(len(self.bullets) - 1, -1, -1):
+            b = self.bullets[i]
+            b.update()
+
+            # remove if far off-screen (screen check is easiest)
+            sx, sy = b.screen_pos(self.cam_x, self.cam_y)
+            if sx < -100 or sx > self.width + 100 or sy < -100 or sy > self.height + 100:
+                self.bullets.pop(i)
+                continue
+
+            # collision (WORLD coords)
+            for z in self.zombie_list:
+                if not z.visible:
+                    continue
+
+                hb = z.world_hitbox()  # world rect
+                # circle-rect overlap quick check
+                if hb.collidepoint(b.x, b.y):
+                    z.hit()
+                    self.bullets.pop(i)
+                    break
 
     def draw(self, window):
         self.bg.draw(window)
         self.p.draw_player(window)
         self.shift_background_from_player_flags()
         self.handle_zombie()
+        self.tick_cooldown()
+        self.update_bullets()
+
         for z in self.zombie_list:
             z.draw(window, self.cam_x, self.cam_y)
+
+        for b in self.bullets:
+            b.draw(window, self.cam_x, self.cam_y)

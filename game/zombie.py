@@ -80,3 +80,6 @@ class zombie:
         else:
             self.visible = False
         print("hit")
+
+    def world_hitbox(self):
+        return py.Rect(self.x + 20, self.y, 28, 60)
