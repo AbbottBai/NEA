@@ -76,7 +76,7 @@ class zombie:
 
     def hit(self):
         if self.health > 0:
-            self.health -= 1
+            self.health -= 4
         else:
             self.visible = False
         print("hit")
