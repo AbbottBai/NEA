@@ -30,6 +30,44 @@ class player:
         self.h_movement_counter = 0
         self.v_movement_counter = 0
 
+        # Health / hit system
+        self.hp = 100
+        self.alive = True
+        self.invuln_frames = 0 # Countdown (frames)
+        self.invuln_duration = 30 # About 1s at 30fps
+        self.damage_on_hit = 10
+
+        self.hitbox_offset_x = 18
+        self.hitbox_offset_y = 8
+        self.hitbox_w = 28
+        self.hitbox_h = 48
+
+    def tick(self):
+        # Call once per frame
+        if self.invuln_frames > 0:
+            self.invuln_frames -= 1
+
+    def world_hitbox(self, cam_x, cam_y) -> py.Rect:
+        """
+        Return player's hitbox in WORLD coords.
+        Player screen pos = (self.x, self.y)
+        World pos = screen - cam
+        """
+        wx = (self.x - cam_x) + self.hitbox_offset_x
+        wy = (self.y - cam_y) + self.hitbox_offset_y
+        return py.Rect(int(wx), int(wy), self.hitbox_w, self.hitbox_h)
+
+    def can_take_hit(self) -> bool:
+        return self.invuln_frames == 0 and self.hp > 0
+
+    def take_hit(self, dmg: int):
+        if not self.can_take_hit():
+            return
+        self.hp = max(0, self.hp - dmg)
+        self.invuln_frames = self.invuln_duration
+        if self.hp == 0:
+            self.alive = False
+
     def move_player(self):
         key = py.key.get_pressed()
         self.left_background_shift = False

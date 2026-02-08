@@ -44,6 +44,7 @@ class game_screen:
         self.zombie_list = []
 
         self.bg_speed = 6
+        self.ui_font = py.font.SysFont("arial", 30, True)
 
     def handle_screen(self, event):
         if event.type == py.KEYDOWN:
@@ -169,13 +170,39 @@ class game_screen:
                     self.bullets.pop(i)
                     break
 
+    def handle_player_hits(self):
+        # Cooldowns tick first
+        self.p.tick()
+
+        if not self.zombie_list:
+            return
+
+        p_rect = self.p.world_hitbox(self.cam_x, self.cam_y)
+
+        for z in self.zombie_list:
+            if not z.visible:
+                continue
+
+            z_rect = z.world_hitbox()
+            if p_rect.colliderect(z_rect):
+                self.p.take_hit(self.p.damage_on_hit)
+                break
+
     def draw(self, window):
         self.bg.draw(window)
         self.p.draw_player(window)
         self.shift_background_from_player_flags()
         self.handle_zombie()
+        self.handle_player_hits()
         self.tick_cooldown()
         self.update_bullets()
+
+        hp_text = self.ui_font.render(f"HP: {self.p.hp}", True, (255, 0, 0))
+        window.blit(hp_text, (20, 20))
+
+        if self.p.alive == False:
+            alive_text = self.ui_font.render(f"You are dead", True, (255, 0, 0))
+            window.blit(alive_text, (100, 20))
 
         for z in self.zombie_list:
             z.draw(window, self.cam_x, self.cam_y)
