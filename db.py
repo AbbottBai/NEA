@@ -59,6 +59,16 @@ CREATE TABLE IF NOT EXISTS QuestionAttempt (
 ''')
 conn.commit()
 
+# Create the scores table (stores best score per user)
+c.execute('''
+CREATE TABLE IF NOT EXISTS Score (
+    UserEmail TEXT NOT NULL PRIMARY KEY,
+    HighScore INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (UserEmail) REFERENCES User(UserEmail)
+)
+''')
+conn.commit()
+
 print("Database and tables created")
 
 # Close the connection

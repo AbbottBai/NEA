@@ -1,4 +1,5 @@
 import pygame as py
+from game.score_db import get_top_scores
 
 # Creates a reusable class for buttons.
 class Button:
@@ -30,14 +31,9 @@ class Button:
         return event.type == py.MOUSEBUTTONDOWN and event.button == 1 and self.rect.collidepoint(event.pos)
 
 def create_leaderboard_ui(screen, width, height):
-    # Creates a placeholder for leaderboard data which will be integrated with backend later
-    leaderboard = [
-        {"name": "Player 1", "score": 100},
-        {"name": "Player 2", "score": 95},
-        {"name": "Player 3", "score": 90},
-        {"name": "Player 4", "score": 85},
-        {"name": "Player 5", "score": 80}
-    ]
+    leaderboard = get_top_scores(5)
+    if not leaderboard:
+        leaderboard = [{"name": "No scores yet", "score": ""}]
 
     # Set up fonts
     title_height = 80
@@ -53,7 +49,11 @@ def create_leaderboard_ui(screen, width, height):
 
     # Draw each player
     for i, player in enumerate(leaderboard):
-        name = font_name.render(player["name"], True, (0,0,0))
+        raw_name = str(player["name"])
+        # This only displays the characters before the @ of an email.
+        display_name = raw_name.split("@")[0] if "@" in raw_name else raw_name
+        name = font_name.render(display_name, True, (0, 0, 0))
+
         score = font_score.render(str(player["score"]), True, (0,0,0))
 
         # Position players from top to bottom based on index

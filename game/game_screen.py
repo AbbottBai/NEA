@@ -5,6 +5,7 @@ from game.zombie import zombie
 from game.projectile import projectile
 from game.question_db import get_random_question, record_attempt
 from game.question_overlay import QuestionOverlay
+from game.score_db import submit_score
 import random
 
 
@@ -235,8 +236,9 @@ class game_screen:
         self.handle_zombie()
         self.handle_player_hits()
 
-        # If game is over, go back to lobby
+        # If game is over, save score and go back to lobby
         if self.p.lives <= 0:
+            submit_score(self.user_email, self.score)
             return "lobby_screen"
 
         # If player is answering a question, pause gameplay updates
@@ -273,8 +275,9 @@ class game_screen:
                 self.p.lose_life()
                 self.pending_life_loss = True
 
-            # If no lives left, return to lobby screen
+            # If no lives left, save score and return to lobby screen
             if self.p.lives <= 0:
+                submit_score(self.user_email, self.score)
                 return "lobby_screen"
 
             # Otherwise show a question to revive
