@@ -36,6 +36,7 @@ class signup_screen:
         font = py.font.SysFont("Arial", 30)
         self.error_surface = font.render(self.error_message, True, red)
         self.signup_status = False
+        self.user_email = None
 
     def handle_screen(self, event):
         self.email_box.handle_event(event)
@@ -75,6 +76,7 @@ class signup_screen:
                 return
 
             self.signup_status = True
+            self.user_email = self.email_box.text
             return "info_screen"
 
     def draw(self, window):

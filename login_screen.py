@@ -31,6 +31,7 @@ class login_screen:
         self.font = py.font.SysFont("arial", 36)
         self.message = ""
         self.login_state = False
+        self.user_email = None
 
     def handle_screen(self, event):
         self.email_box.handle_event(event)
@@ -41,6 +42,7 @@ class login_screen:
             self.login_state, self.message = auth.login_func()
 
             if self.login_state:
+                self.user_email = self.email_box.text
                 return "info_screen"
             print(self.message)
 

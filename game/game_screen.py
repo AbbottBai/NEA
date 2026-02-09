@@ -3,16 +3,25 @@ from game.player import player
 from game.bg_render import bg_render
 from game.zombie import zombie
 from game.projectile import projectile
+from game.question_db import get_random_question, record_attempt
+from game.question_overlay import QuestionOverlay
 import random
 
 
 class game_screen:
-    def __init__(self, width, height):
+    def __init__(self, width, height, user_email):
         self.width = width
         self.height = height
         self.bg = bg_render(width, height, "Blue.png")
         self.cam_x = 0 #Added in camera view variables
         self.cam_y = 0
+
+        # Questions
+        self.user_email = user_email  # pass real logged-in email here
+        self.state = "PLAY"  # PLAY or QUESTION
+        self.current_question = None
+        self.q_overlay = QuestionOverlay(width, height)
+        self.last_answer_result = None  # None / True / False (optional feedback)
 
         # Zombie spawning variables
         self.start_time_ms = py.time.get_ticks()
@@ -47,6 +56,13 @@ class game_screen:
         self.ui_font = py.font.SysFont("arial", 30, True)
 
     def handle_screen(self, event):
+        # While question is showing, consume input here
+        if self.state == "QUESTION":
+            choice = self.q_overlay.handle_event(event)
+            if choice and self.current_question:
+                self.process_answer(choice)
+            return None
+
         if event.type == py.KEYDOWN:
             if event.key == py.K_ESCAPE:
                 return "lobby_screen"
@@ -188,12 +204,38 @@ class game_screen:
                 self.p.take_hit(self.p.damage_on_hit)
                 break
 
+    def process_answer(self, chosen):
+        q = self.current_question
+        correct = (chosen == q["correct"])
+
+        # store attempt in DB
+        record_attempt(self.user_email, q["id"], chosen, correct)
+
+        if correct:
+            # revive player
+            self.p.hp = 50
+            self.p.alive = True
+            self.p.invuln_frames = 60  # brief i-frames after revive
+            self.state = "PLAY"
+            self.current_question = None
+        else:
+            # wrong: keep them dead, but show another question (or keep same)
+            # simplest: show a new random question
+            self.current_question = get_random_question()
+
     def draw(self, window):
         self.bg.draw(window)
         self.p.draw_player(window)
         self.shift_background_from_player_flags()
         self.handle_zombie()
         self.handle_player_hits()
+
+        # If player is answering a question, pause gameplay updates
+        if self.state == "QUESTION":
+            if self.current_question:
+                self.q_overlay.draw(window, self.current_question)
+            return
+
         self.tick_cooldown()
         self.update_bullets()
 
@@ -209,3 +251,9 @@ class game_screen:
 
         for b in self.bullets:
             b.draw(window, self.cam_x, self.cam_y)
+
+        # death check (after updates)
+        if self.state == "PLAY" and not self.p.alive:
+            self.state = "QUESTION"
+            self.current_question = get_random_question()
+            self.last_answer_result = None
