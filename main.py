@@ -4,6 +4,7 @@ from login_screen import login_screen
 from signup_screen import signup_screen
 from info_screen import info_screen
 from lobby_screen import lobby_screen
+from settings_screen import settings_screen
 from game.game_screen import game_screen
 
 py.init()
@@ -36,6 +37,8 @@ while run:
             next_screen = lobby_screen(width, height)
         elif next_screen_str == "play_screen":
             next_screen = game_screen(width, height, current_user_email)
+        elif next_screen_str == "settings_screen":
+            next_screen = settings_screen(width, height, current_user_email)
 
         else:
             next_screen = screen_controller

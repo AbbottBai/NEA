@@ -6,6 +6,7 @@ from game.projectile import projectile
 from game.question_db import get_random_question, record_attempt
 from game.question_overlay import QuestionOverlay
 from game.score_db import submit_score
+from game.settings_db import get_background
 import random
 
 
@@ -13,7 +14,8 @@ class game_screen:
     def __init__(self, width, height, user_email):
         self.width = width
         self.height = height
-        self.bg = bg_render(width, height, "Blue.png")
+        bg_file = get_background(user_email)
+        self.bg = bg_render(width, height, bg_file)
         self.cam_x = 0 #Added in camera view variables
         self.cam_y = 0
 

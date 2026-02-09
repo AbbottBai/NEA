@@ -72,6 +72,7 @@ class lobby_screen:
 
         self.lb_background = py.image.load("lb_background.jpg")
         self.lb_background = py.transform.scale(self.lb_background, (self.width, self.height))
+        self.user_email = None
 
         # Buttons
         button_w, button_h = 360, 80 # I combined the play and signout button width and heights as they are equal
@@ -113,6 +114,8 @@ class lobby_screen:
             return "play_screen"
         if self.signout_button.clicked(event):
             return "login_screen" # This switches screen back to login screen.
+        if self.setting_button.clicked(event):
+            return "settings_screen"
         return None
 
     def draw(self, window):

@@ -69,6 +69,18 @@ CREATE TABLE IF NOT EXISTS Score (
 ''')
 conn.commit()
 
+# Per-user settings (safe replacement for Setting table)
+c.execute('''
+CREATE TABLE IF NOT EXISTS UserSetting (
+    UserEmail TEXT NOT NULL,
+    SettingName TEXT NOT NULL,
+    SettingValue TEXT NOT NULL,
+    PRIMARY KEY (UserEmail, SettingName),
+    FOREIGN KEY (UserEmail) REFERENCES User(UserEmail)
+)
+''')
+conn.commit()
+
 print("Database and tables created")
 
 # Close the connection
