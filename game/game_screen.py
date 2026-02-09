@@ -49,6 +49,7 @@ class game_screen:
             l_boundary=margin_x, r_boundary=width - margin_x,
             u_boundary=margin_y, d_boundary=height - margin_y
         )
+        self.score = 0
 
         self.zombie_list = []
 
@@ -182,7 +183,9 @@ class game_screen:
                 hb = z.world_hitbox()  # world rect
                 # circle-rect overlap quick check
                 if hb.collidepoint(b.x, b.y):
-                    z.hit()
+                    died = z.hit()
+                    if died:
+                        self.score += 1
                     self.bullets.pop(i)
                     break
 
@@ -241,6 +244,9 @@ class game_screen:
 
         hp_text = self.ui_font.render(f"HP: {self.p.hp}", True, (255, 0, 0))
         window.blit(hp_text, (20, 20))
+
+        score_text = self.ui_font.render(f"Score: {self.score}", True, (255, 255, 255))
+        window.blit(score_text, (self.width - score_text.get_width() - 20, 20))
 
         if self.p.alive == False:
             alive_text = self.ui_font.render(f"You are dead", True, (255, 0, 0))

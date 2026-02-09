@@ -77,9 +77,12 @@ class zombie:
     def hit(self):
         if self.health > 0:
             self.health -= 4
-        else:
+
+        if self.health <= 0:
             self.visible = False
-        print("hit")
+            return True  # died this hit
+
+        return False  # still alive
 
     def world_hitbox(self):
         return py.Rect(self.x + 20, self.y, 28, 60)
