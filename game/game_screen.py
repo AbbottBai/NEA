@@ -50,6 +50,7 @@ class game_screen:
             u_boundary=margin_y, d_boundary=height - margin_y
         )
         self.score = 0
+        self.pending_life_loss = False # Prevents accidentally subtracting multiple times
 
         self.zombie_list = []
 
@@ -216,11 +217,12 @@ class game_screen:
 
         if correct:
             # revive player
-            self.p.hp = 50
+            self.p.hp = 100
             self.p.alive = True
             self.p.invuln_frames = 60  # brief i-frames after revive
             self.state = "PLAY"
             self.current_question = None
+            self.pending_life_loss = False
         else:
             # wrong: keep them dead, but show another question (or keep same)
             # simplest: show a new random question
@@ -232,6 +234,10 @@ class game_screen:
         self.shift_background_from_player_flags()
         self.handle_zombie()
         self.handle_player_hits()
+
+        # If game is over, go back to lobby
+        if self.p.lives <= 0:
+            return "lobby_screen"
 
         # If player is answering a question, pause gameplay updates
         if self.state == "QUESTION":
@@ -248,6 +254,9 @@ class game_screen:
         score_text = self.ui_font.render(f"Score: {self.score}", True, (255, 255, 255))
         window.blit(score_text, (self.width - score_text.get_width() - 20, 20))
 
+        lives_text = self.ui_font.render(f"Lives: {self.p.lives}", True, (255, 255, 255))
+        window.blit(lives_text, (20, 55))
+
         if self.p.alive == False:
             alive_text = self.ui_font.render(f"You are dead", True, (255, 0, 0))
             window.blit(alive_text, (100, 20))
@@ -258,8 +267,17 @@ class game_screen:
         for b in self.bullets:
             b.draw(window, self.cam_x, self.cam_y)
 
-        # death check (after updates)
         if self.state == "PLAY" and not self.p.alive:
+            # Lose exactly one life per death event
+            if not self.pending_life_loss:
+                self.p.lose_life()
+                self.pending_life_loss = True
+
+            # If no lives left, return to lobby screen
+            if self.p.lives <= 0:
+                return "lobby_screen"
+
+            # Otherwise show a question to revive
             self.state = "QUESTION"
             self.current_question = get_random_question()
             self.last_answer_result = None

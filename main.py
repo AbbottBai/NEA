@@ -61,7 +61,12 @@ while run:
         if event.type == py.QUIT:
             run = False
 
-    screen_controller.draw(window)
+    result = screen_controller.draw(window)
+
+    # allow screens (like game_screen) to request navigation via draw()
+    if result == "lobby_screen":
+        screen_controller = lobby_screen(width, height)
+
     clock.tick(30)
     py.display.update()
 

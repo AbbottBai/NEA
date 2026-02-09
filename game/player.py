@@ -32,6 +32,7 @@ class player:
 
         # Health / hit system
         self.hp = 100
+        self.lives = 3
         self.alive = True
         self.invuln_frames = 0 # Countdown (frames)
         self.invuln_duration = 30 # About 1s at 30fps
@@ -67,6 +68,15 @@ class player:
         self.invuln_frames = self.invuln_duration
         if self.hp == 0:
             self.alive = False
+
+    def lose_life(self):
+        if self.lives > 0:
+            self.lives -= 1
+
+    def reset_for_new_life(self):
+        self.hp = 100
+        self.alive = True
+        self.invuln_frames = 60  # short protection
 
     def move_player(self):
         key = py.key.get_pressed()
