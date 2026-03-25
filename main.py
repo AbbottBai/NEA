@@ -1,4 +1,6 @@
 import pygame as py
+# Pygame is the main library used to code the actual game
+# Scripts below are imported to the main.py script
 from screen_controller import screen_controller
 from login_screen import login_screen
 from signup_screen import signup_screen
@@ -10,12 +12,16 @@ from game.game_screen import game_screen
 py.init()
 clock = py.time.Clock()
 
+# Defines the dimensions of the Pygame window
 width = 1200
 height = 700
 window_size = (width, height)
 window = py.display.set_mode(window_size)
+
+# Sets the caption for the pygame window
 py.display.set_caption("Computer Science Revision Game")
 
+# Main program loop condition boolean
 run = True
 
 screen_controller = screen_controller(width, height)
@@ -24,7 +30,7 @@ current_user_email = None
 while run:
 
     for event in py.event.get():
-
+        # Handles the screen that the user sees
         next_screen_str = screen_controller.handle_screen(event)
 
         if next_screen_str == "login_screen":
@@ -61,6 +67,7 @@ while run:
         if hasattr(screen_controller, "user_email") and screen_controller.user_email:
             current_user_email = screen_controller.user_email
 
+        # If the close button is clicked, then the program automatically quits.
         if event.type == py.QUIT:
             run = False
 
@@ -70,7 +77,7 @@ while run:
     if result == "lobby_screen":
         screen_controller = lobby_screen(width, height)
 
-    clock.tick(30)
+    clock.tick(30) # Runs at 30 FPS
     py.display.update()
 
 py.quit()
