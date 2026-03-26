@@ -111,11 +111,11 @@ class lobby_screen:
 
     def handle_screen(self, event):
         if self.play_button.clicked(event):
-            return "play_screen"
+            return "play_screen" # This switches screen to play screen.
         if self.signout_button.clicked(event):
             return "login_screen" # This switches screen back to login screen.
         if self.setting_button.clicked(event):
-            return "settings_screen"
+            return "settings_screen" # This switches screen to settings screen
         return None
 
     def draw(self, window):

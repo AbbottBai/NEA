@@ -2,6 +2,7 @@ import pygame as py
 from auth_ui import input_box, button
 from authentication import authentication
 
+# pre-defines RGB values for commonly used colours for the ease of use later.
 white = (255, 255, 255)
 black = (0, 0, 0)
 light_gray = (230, 230, 230)

@@ -2,7 +2,7 @@ import pygame as py
 from animated_text import animated_text
 from auth_ui import button
 
-# Pre-defines the colours that will be used as variables that can more easily be called
+# Pre-defines the RGB values for commonly used colours for the ease of use later.
 white = (255, 255, 255)
 black = (0, 0, 0)
 light_gray = (230, 230, 230)

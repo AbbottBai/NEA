@@ -1,4 +1,4 @@
-import hashlib
+import hashlib # the hashlib library contains the hash function which is used to hash the user's password
 import os
 import re
 import sqlite3

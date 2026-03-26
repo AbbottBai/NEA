@@ -27,6 +27,7 @@ run = True
 screen_controller = screen_controller(width, height)
 current_user_email = None
 
+# Main program loop
 while run:
 
     for event in py.event.get():
@@ -78,6 +79,6 @@ while run:
         screen_controller = lobby_screen(width, height)
 
     clock.tick(30) # Runs at 30 FPS
-    py.display.update()
+    py.display.update() # Refreshes the contents on the screen
 
 py.quit()

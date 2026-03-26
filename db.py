@@ -1,4 +1,5 @@
 import sqlite3
+# sqlite3 is the main library used to create and manage the backend relational database
 
 # Connect to the database (or create it if it doesn't exist)
 conn = sqlite3.connect('database.db')

@@ -1,5 +1,6 @@
 import pygame as py
 
+# Pre-defines the RGB values for commonly used colours for ease of access later.
 white = (255, 255, 255)
 black = (0, 0, 0)
 light_gray = (230, 230, 230)
@@ -26,6 +27,7 @@ class input_box:
         self.security = 0
         self.stars = ""
 
+    # This handles what happens when the user interacts with the input box
     def handle_event(self, event):
         if event.type == py.MOUSEBUTTONDOWN:
             self.active = self.rect.collidepoint(event.pos)

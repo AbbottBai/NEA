@@ -2,6 +2,7 @@ import sqlite3
 
 DB = "database.db"
 
+# Below are all the questions to be added to the Question table within the database
 QUESTIONS = [
     ("Which of these is an input device?", "Monitor", "Printer", "Keyboard", "Speaker", "C"),
     ("What does CPU stand for?", "Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Control Processing Unit", "A"),
@@ -37,6 +38,8 @@ def main():
     conn.commit()
     conn.close()
     print(f"Inserted {len(QUESTIONS)} questions.")
+    # This function connects to the database and actually stores the questions into the database
+    # A success message will be displayed when the questions has been successfully stored.
 
 if __name__ == "__main__":
     main()

@@ -13,6 +13,7 @@ class animated_text():
         self.fin_typing = False
         self.animate = True
 
+    # Fade function makes the text gradually fade into view.
     def fade(self, window):
         # Gets the time elapsed since start of animation
         elapsed = (py.time.get_ticks() - self.start_time) / (1000 / self.speed)
@@ -23,6 +24,7 @@ class animated_text():
         text_surface.set_alpha(alpha)
         window.blit(text_surface, text_surface.get_rect(center = (self.x, self.y)))
 
+    # Typing function makes letters appear one by one automatically, to appear like they are being typed onto the screen
     def typing(self, window):
         elapsed = (py.time.get_ticks() - self.start_time) / (1000 / self.speed)
 
