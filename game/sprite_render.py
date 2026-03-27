@@ -1,6 +1,6 @@
 import pygame as py
 import os
-
+# Load sprite function is used to load the left sprite image from a specific location and reflect them for right side animation.
 def load_sprite(sprite_width, sprite_height, sheet_name, sprite_amount):
     right_sprites = []
     image_path = os.path.join("", "sprite", sheet_name)

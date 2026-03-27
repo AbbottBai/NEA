@@ -1,6 +1,6 @@
 import pygame as py
-import math
-from pathlib import Path
+import math # math is a library used for mathematical calculations
+from pathlib import Path # pathlib is a library which manages files and project directories.
 
 HERE = Path(__file__).resolve().parent # .../game
 SPRITES = HERE.parent / "zombie_sprite" # .../zombie_sprite
@@ -29,10 +29,12 @@ class zombie:
     def set_target(self, px, py):
         self.player_x = px
         self.player_y = py
+        # Uses the user's current coordinates as the target for the zombie to move towards
 
     def chase(self):
         dx = self.player_x - self.x
         dy = self.player_y - self.y
+        # Calculates the distance to the user
 
         dist = math.hypot(dx, dy)  # sqrt(dx^2 + dy^2)
         if dist == 0:
@@ -57,6 +59,7 @@ class zombie:
 
         if self.walk_count >= 33:
             self.walk_count = 0
+            # Resets animation when the last frame has been displayed
 
         sx = self.x + cam_x
         sy = self.y + cam_y
@@ -77,9 +80,11 @@ class zombie:
     def hit(self):
         if self.health > 0:
             self.health -= 4
+            # Subtracts 4 from the health of zombies when they are hit by the user
 
         if self.health <= 0:
             self.visible = False
+            # Removes the zombie from view if their health is negative
             return True  # died this hit
 
         return False  # still alive

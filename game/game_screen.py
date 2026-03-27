@@ -46,6 +46,7 @@ class game_screen:
         margin_x = width // 3
         margin_y = height // 3
 
+        # Creates an instance of the player
         self.p = player(
             start_x, start_y, p_w, p_h,
             h_velocity=6, v_velocity=6,
@@ -56,8 +57,9 @@ class game_screen:
         self.pending_life_loss = False # Prevents accidentally subtracting multiple times
 
         self.zombie_list = []
+        # zombie_list contains all instances of zombies which spawns.
 
-        self.bg_speed = 6
+        self.bg_speed = 6 # Background shifting speed
         self.ui_font = py.font.SysFont("arial", 30, True)
 
     def handle_screen(self, event):
@@ -71,8 +73,11 @@ class game_screen:
         if event.type == py.KEYDOWN:
             if event.key == py.K_ESCAPE:
                 return "lobby_screen"
+                # If escape key has been hit whilst playing the game, the game stops and the user is redirected to the lobby screen
+
             if event.key == py.K_SPACE:
                 self.try_shoot()
+                # If the user presses space, that triggers the try_shoot() function which shoots a projectile in the direction they are facing
         return None
 
     def shift_background_from_player_flags(self):
@@ -96,7 +101,7 @@ class game_screen:
             self.cam_y -= dy
 
     def spawn_zombie(self):
-        side = random.choice(["left", "right", "top", "bottom"])
+        side = random.choice(["left", "right", "top", "bottom"]) # Decides which side of the screen to spawn zombies
         pad = 60  # How far off-screen they start
 
         if side == "left":
